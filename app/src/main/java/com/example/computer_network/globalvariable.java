@@ -93,7 +93,6 @@ public class globalvariable extends Application {
     ArrayList<server_waitanswer> waits = new ArrayList<>();
     ArrayList<Thread> threads = new ArrayList<>();
     public void threadinit(){
-//        waits.add(new server_waitanswer(null));
         waits.clear();
         threads.clear();
         for (player nowplayer : players) {

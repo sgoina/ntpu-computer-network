@@ -30,37 +30,6 @@ public class result extends AppCompatActivity {
             }
         }
     }
-
-//    public class receive_result implements Runnable{
-//
-//        String msg, result;
-//        @Override
-//        public void run() {
-//            result = "";
-//            int i = 0;
-//            try {
-//                while(true){
-//                    msg = gv.br.readLine();
-//                    if (msg.equals("no"))
-//                        break;
-//                    if (i == 0)
-//                        result = msg;
-//                    else
-//                        result = result + "\n" + msg;
-//                    i++;
-//                }
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        tv_result.setText(result);;
-//                    }
-//                });
-//            } catch (Exception e) {
-//
-//            }
-//        }
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +49,6 @@ public class result extends AppCompatActivity {
             Bundle bundle = getIntent().getExtras();
             String sss = bundle.getString("Result");
             tv_result.setText(sss);
-//            Thread thread = new Thread(new receive_result());
-//            thread.start();
         }
     }
 }

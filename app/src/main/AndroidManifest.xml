@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".globalvariable"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Computer_network"
+        tools:targetApi="19" >
+        <activity
+            android:name=".second_clinet"
+            android:exported="false" />
+        <activity
+            android:name=".result"
+            android:exported="false" />
+        <activity
+            android:name=".player_answer"
+            android:exported="false" />
+        <activity
+            android:name=".set_question"
+            android:exported="false" />
+        <activity
+            android:name=".wait"
+            android:exported="false" />
+        <activity
+            android:name=".third_server"
+            android:exported="false" />
+        <activity
+            android:name=".second_server"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

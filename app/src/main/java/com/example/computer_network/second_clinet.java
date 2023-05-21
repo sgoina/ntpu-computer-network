@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,12 +32,10 @@ public class second_clinet extends AppCompatActivity {
 
             try{
                 gv.socket = new Socket(ip, 5050);
-                gv.br = new BufferedReader(new InputStreamReader(gv.socket.getInputStream()));
-                gv.bw = new BufferedWriter(new OutputStreamWriter(gv.socket.getOutputStream()));
-                gv.bw.write(et_name.getText().toString());
-                gv.bw.newLine();
-                gv.bw.flush();
-                String msg = gv.br.readLine().toString();
+                gv.output = new DataOutputStream(gv.socket.getOutputStream());
+                gv.input = new DataInputStream(gv.socket.getInputStream());
+                gv.output.writeUTF(et_name.getText().toString());
+                String msg = gv.input.readUTF();
                 Bundle bundle = new Bundle();
                 bundle.putString("content", msg);
                 Intent intent = new Intent();

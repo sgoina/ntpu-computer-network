@@ -1,6 +1,8 @@
 package com.example.computer_network;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -9,29 +11,31 @@ public class globalvariable extends Application {
     public ServerSocket serverSocket;
     public ArrayList<player> players = new ArrayList<>();
     public Socket socket;
-    public BufferedWriter bw;
-    public BufferedReader br;
+    DataOutputStream output;
+    DataInputStream input;
     public String firstplayername, mode;
     public int num_people, num_round;
     public int firstplayerscore = 0;
     public int now_turn = 1;
     public int now_round = 1;
-
+    public byte[] imagebuffer;
     class player {
         Socket playerSocket;
-        BufferedReader br;
-        BufferedWriter bw;
+        DataOutputStream output;
+        DataInputStream input;
         String playername;
         int playernumber;
         int score;
+
 
         public player(Socket socket, int number) {
             try {
                 this.playerSocket = socket;
                 this.playernumber = number;
-                this.br = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-                this.bw = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
-                this.playername = br.readLine();
+                this.output = new DataOutputStream(playerSocket.getOutputStream());
+                this.input = new DataInputStream(playerSocket.getInputStream());
+
+                this.playername = input.readUTF();
                 this.score = 0;
             } catch (IOException e) {
 
@@ -46,9 +50,8 @@ public class globalvariable extends Application {
         for (player player : players) {
             try {
                 if (player.playernumber != number) {
-                    player.bw.write(msg);
-                    player.bw.newLine();
-                    player.bw.flush();
+                    player.output.writeUTF(msg);
+                    player.output.flush();
                 }
             } catch (IOException e) {
 
@@ -57,9 +60,8 @@ public class globalvariable extends Application {
     }
     public void send_to_server(String msg) {
         try {
-            bw.write(msg);
-            bw.newLine();
-            bw.flush();
+            output.writeUTF(msg);
+            output.flush();
         } catch (IOException e) {
 
         }
@@ -77,12 +79,11 @@ public class globalvariable extends Application {
 
         public void run() {
             try {
-                playeranswer = nowplayer.br.readLine();
+                playeranswer = nowplayer.input.readUTF();
                 if (playeranswer.equals("correct"))
                     nowplayer.score++;
-                nowplayer.bw.write("wait_ans");
-                nowplayer.bw.newLine();
-                nowplayer.bw.flush();
+                nowplayer.output.writeUTF("wait_ans");
+                nowplayer.output.flush();
             } catch (IOException e) {
                 System.out.println(nowplayer.playername + " close");
             }

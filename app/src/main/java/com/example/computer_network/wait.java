@@ -3,16 +3,18 @@ package com.example.computer_network;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class wait extends AppCompatActivity {
 
     globalvariable gv;
+    private DataInputStream dataInputStream;
 
     TextView tv_status, tv_statistic;
 
@@ -24,7 +26,7 @@ public class wait extends AppCompatActivity {
         public void run() {
             try {
                 while (true) {
-                    msg = gv.br.readLine().toString();
+                    msg = gv.input.readUTF().toString();
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -69,13 +71,22 @@ public class wait extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if (msg.equals("ready_question")){
-                    String question = gv.br.readLine().toString();
-                    String ans_a = gv.br.readLine().toString();
-                    String ans_b = gv.br.readLine().toString();
-                    String ans_c = gv.br.readLine().toString();
-                    String true_ans = gv.br.readLine().toString();
+                    String question = gv.input.readUTF();
+                    String have_image = gv.input.readUTF();
+                    if (have_image.equals("have_image")){
+                        int len= gv.input.readInt();
+                        gv.imagebuffer = new byte[len];
+                        if (len > 0) {
+                            gv.input.readFully(gv.imagebuffer,0,gv.imagebuffer.length);
+                        }
+                    }
+                    String ans_a = gv.input.readUTF();
+                    String ans_b = gv.input.readUTF();
+                    String ans_c = gv.input.readUTF();
+                    String true_ans = gv.input.readUTF();
                     Bundle bundle = new Bundle();
                     bundle.putString("question", question);
+                    bundle.putString("have_image", have_image);
                     bundle.putString("ans_a", ans_a);
                     bundle.putString("ans_b", ans_b);
                     bundle.putString("ans_c", ans_c);
@@ -86,9 +97,9 @@ public class wait extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if (msg.equals("END")){
-                    String scoreboard = gv.br.readLine().toString();
+                    String scoreboard = gv.input.readUTF();
                     while (true){
-                        String line = gv.br.readLine().toString();
+                        String line = gv.input.readUTF();
                         if (line.equals("no"))
                             break;
                         scoreboard = scoreboard + "\n" + line;
@@ -119,16 +130,16 @@ public class wait extends AppCompatActivity {
                     }
                 });
                 while (true) {
-                    String msg = gv.players.get(gv.now_turn - 2).br.readLine().toString();
+                    String msg = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
                     if (msg.equals("ready_question")){
                         break;
                     }
                 }
-                String question = gv.players.get(gv.now_turn - 2).br.readLine().toString();
-                String ans_a = gv.players.get(gv.now_turn - 2).br.readLine().toString();
-                String ans_b = gv.players.get(gv.now_turn - 2).br.readLine().toString();
-                String ans_c = gv.players.get(gv.now_turn - 2).br.readLine().toString();
-                String true_ans = gv.players.get(gv.now_turn - 2).br.readLine().toString();
+                String question = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
+                String ans_a = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
+                String ans_b = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
+                String ans_c = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
+                String true_ans = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
                 gv.broadcast("ready_question", gv.now_turn);
                 gv.broadcast(question, gv.now_turn);
                 gv.broadcast(ans_a, gv.now_turn);
@@ -176,14 +187,12 @@ public class wait extends AppCompatActivity {
                 try {
                     for (globalvariable.player p : gv.players){
                         if(p.playernumber == gv.now_turn) {
-                            p.bw.write("set_question");
-                            p.bw.newLine();
-                            p.bw.flush();
+                            p.output.writeUTF("set_question");
+                            p.output.flush();
                         }
                         else {
-                            p.bw.write("wait_question");
-                            p.bw.newLine();
-                            p.bw.flush();
+                            p.output.writeUTF("wait_question");
+                            p.output.flush();
                         }
 
                     }

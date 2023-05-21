@@ -20,27 +20,6 @@ public class second_server extends AppCompatActivity {
 
     private globalvariable gv;
     NumberPicker np_person, np_round;
-    static class player {
-        Socket playerSocket;
-        BufferedReader br;
-        BufferedWriter bw;
-        String playername;
-        int playernumber;
-        int score;
-
-        public player(Socket socket, int number) {
-            try {
-                this.playerSocket = socket;
-                this.playernumber = number;
-                this.br = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-                this.bw = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
-                this.playername = br.readLine();
-                this.score = 0;
-            } catch (IOException e) {
-
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

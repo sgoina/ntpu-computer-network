@@ -25,7 +25,7 @@ public class second_server extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_server);
-
+        getSupportActionBar().hide();
         np_person = findViewById(R.id.number_people);
         np_round = findViewById(R.id.number_round);
         np_person.setMinValue(2);
@@ -38,7 +38,7 @@ public class second_server extends AppCompatActivity {
     public void createroom_onclick(View view) {
         gv.mode = "server";
         EditText et = (EditText) findViewById(R.id.et_input_name_server);
-        gv.firstplayername = et.getText().toString();
+        gv.your_name = et.getText().toString();
         gv.num_people = np_person.getValue();
         gv.num_round = np_round.getValue();
         try {

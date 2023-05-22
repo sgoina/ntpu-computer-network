@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">你問我答</string>
+    <string name="app_name">你答我猜</string>
     <string name="input_room_address">請輸入房間號碼</string>
     <string name="room_address">房間號碼</string>
     <string name="dot">⦁</string>
@@ -10,4 +10,15 @@
     <string name="how_many_round">回合數</string>
     <string name="send">送出</string>
     <string name="title_activity_second">SecondActivity</string>
+    <string name="title_activity_testtest">testtest</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
 </resources>

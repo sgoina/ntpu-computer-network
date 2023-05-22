@@ -21,24 +21,18 @@ public class wait extends AppCompatActivity {
     public class receive_client implements Runnable{
 
         String msg;
+        String statistic;
 
         @Override
         public void run() {
             try {
                 while (true) {
                     msg = gv.input.readUTF().toString();
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tv_status.setText(msg);
-                        }
-                    });
                     if (msg.equals("wait_question")) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tv_status.setText("Wait for question");
+                                tv_status.setText("等待玩家出題");
                             }
                         });
                         continue;
@@ -52,18 +46,26 @@ public class wait extends AppCompatActivity {
                     else if (msg.equals("END")){
                         break;
                     }
-//                    else if (msg.equals("all_ok")){
-//                        tv_status.setText(msg);
-//                        String scorebroad = "";
-//                        while(true){
-//                            msg = gv.br.readLine().toString();
-//                            if (msg.equals("end"))
-//                                break;
-//                            scorebroad = scorebroad + "\n" + msg;
-//                        }
-//                        tv_statistic.setText(scorebroad);
-//                    }
-//                    tv_status.setText(msg);
+                    else if (msg.equals("all_ok")){
+                        statistic = gv.input.readUTF();
+                        int playernumber = gv.input.readInt();
+                        for (int i = 0; i < playernumber; i++){
+                            String playerscore = gv.input.readUTF();
+                            statistic = statistic + "\n" + playerscore;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tv_statistic.setText(statistic);
+                            }
+                        });
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_status.setText(msg);
+                        }
+                    });
                 }
                 if (msg.equals("set_question")){
                     Intent intent = new Intent();
@@ -97,7 +99,9 @@ public class wait extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if (msg.equals("END")){
+
                     String scoreboard = gv.input.readUTF();
+
                     while (true){
                         String line = gv.input.readUTF();
                         if (line.equals("no"))
@@ -126,7 +130,7 @@ public class wait extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tv_status.setText("Wait for question");
+                        tv_status.setText("等待玩家出題");
                     }
                 });
                 while (true) {
@@ -136,12 +140,32 @@ public class wait extends AppCompatActivity {
                     }
                 }
                 String question = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
+                String have_image = gv.players.get(gv.now_turn - 2).input.readUTF();
+                if (have_image.equals("have_image")){
+                    int len= gv.players.get(gv.now_turn - 2).input.readInt();
+                    gv.imagebuffer = new byte[len];
+                    if (len > 0) {
+                        gv.players.get(gv.now_turn - 2).input.readFully(gv.imagebuffer,0,gv.imagebuffer.length);
+                    }
+                }
                 String ans_a = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
                 String ans_b = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
                 String ans_c = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
                 String true_ans = gv.players.get(gv.now_turn - 2).input.readUTF().toString();
                 gv.broadcast("ready_question", gv.now_turn);
                 gv.broadcast(question, gv.now_turn);
+                gv.broadcast(have_image, gv.now_turn);
+                if (have_image.equals("have_image")) {
+                    int size = gv.imagebuffer.length;
+                    for (globalvariable.player p : gv.players) {
+                        if (p.playernumber == gv.now_turn)
+                            continue;
+                        p.output.writeInt(size);
+                        p.output.flush();
+                        p.output.write(gv.imagebuffer, 0, gv.imagebuffer.length);
+                        p.output.flush();
+                    }
+                }
                 gv.broadcast(ans_a, gv.now_turn);
                 gv.broadcast(ans_b, gv.now_turn);
                 gv.broadcast(ans_c, gv.now_turn);
@@ -149,6 +173,7 @@ public class wait extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("question", question);
+                bundle.putString("have_image", have_image);
                 bundle.putString("ans_a", ans_a);
                 bundle.putString("ans_b", ans_b);
                 bundle.putString("ans_c", ans_c);
@@ -210,13 +235,14 @@ public class wait extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait);
+        getSupportActionBar().hide();
         gv = (globalvariable)getApplicationContext();
         tv_status = (TextView) findViewById(R.id.tv_status);
         tv_statistic = (TextView) findViewById(R.id.tv_statistic);
         Bundle bundle = getIntent().getExtras();
         String content = bundle.getString("content");
         if (content.equals("wait_question")){
-            tv_status.setText("Wait for question");
+            tv_status.setText("等待玩家出題");
             if (gv.mode.equals("server")){
                 Thread thread = new Thread(new receive_server());
                 thread.start();
@@ -262,14 +288,33 @@ public class wait extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
             }
-//            gv.broadcast("all_ok", 0);
-            scorebroad = gv.firstplayername + " : " + gv.firstplayerscore + "\n";
-//            gv.broadcast(gv.firstplayername + " : " + gv.firstplayerscore, 0);
-            for (globalvariable.player p : gv.players){
-                scorebroad += p.playername + " : " + p.score + "\n";
-//                gv.broadcast(p.playername + " : " + p.score, 0);
+            gv.broadcast("all_ok", 0);
+            if (gv.num_people == gv.now_turn) {
+                scorebroad = "---> " + gv.your_name + " : " + gv.your_score + "\n";
+                gv.broadcast("---> " + gv.your_name + " : " + gv.your_score , 0);
             }
-//            gv.broadcast("end", 0);
+            else {
+                scorebroad = "      " + gv.your_name + " : " + gv.your_score + "\n";
+                gv.broadcast("      " + gv.your_name + " : " + gv.your_score , 0);
+            }
+            for (globalvariable.player p : gv.players){
+                try {
+                    p.output.writeInt(gv.num_people - 1);
+                    p.output.flush();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            for (globalvariable.player p : gv.players){
+                if (p.playernumber == gv.now_turn + 1) {
+                    scorebroad += "---> " + p.playername + " : " + p.score + "\n";
+                    gv.broadcast("---> " + p.playername + " : " + p.score, 0);
+                }
+                else {
+                    scorebroad += "      " + p.playername + " : " + p.score + "\n";
+                    gv.broadcast("      " + p.playername + " : " + p.score, 0);
+                }
+            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

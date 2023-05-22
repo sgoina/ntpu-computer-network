@@ -35,6 +35,7 @@ public class second_clinet extends AppCompatActivity {
                 gv.output = new DataOutputStream(gv.socket.getOutputStream());
                 gv.input = new DataInputStream(gv.socket.getInputStream());
                 gv.output.writeUTF(et_name.getText().toString());
+                gv.output.flush();
                 String msg = gv.input.readUTF();
                 Bundle bundle = new Bundle();
                 bundle.putString("content", msg);
@@ -52,6 +53,7 @@ public class second_clinet extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_clinet);
+        getSupportActionBar().hide();
         gv = (globalvariable)getApplicationContext();
     }
 

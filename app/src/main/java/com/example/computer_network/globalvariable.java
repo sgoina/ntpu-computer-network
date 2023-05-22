@@ -13,9 +13,9 @@ public class globalvariable extends Application {
     public Socket socket;
     DataOutputStream output;
     DataInputStream input;
-    public String firstplayername, mode;
+    public String your_name, mode;
     public int num_people, num_round;
-    public int firstplayerscore = 0;
+    public int your_score = 0;
     public int now_turn = 1;
     public int now_round = 1;
     public byte[] imagebuffer;

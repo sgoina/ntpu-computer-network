@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class result extends AppCompatActivity {
         public void run() {
             try {
                 gv.broadcast("END", 0);
-                gv.broadcast(gv.firstplayername + " : " + String.valueOf(gv.firstplayerscore), 0);
+                gv.broadcast(gv.your_name + " : " + String.valueOf(gv.your_score), 0);
                 for (globalvariable.player p : gv.players){
                     gv.broadcast(p.playername + " : " + String.valueOf(p.score), 0);
                 }
@@ -34,10 +35,11 @@ public class result extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        getSupportActionBar().hide();
         gv = (globalvariable)getApplicationContext();
         tv_result = (TextView) findViewById(R.id.tv_result);
         if (gv.mode.equals("server")) {
-            scorebroad = gv.firstplayername + " : " + gv.firstplayerscore + "\n";
+            scorebroad = gv.your_name + " : " + gv.your_score + "\n";
             for (globalvariable.player p : gv.players) {
                 scorebroad += p.playername + " : " + p.score + "\n";
             }

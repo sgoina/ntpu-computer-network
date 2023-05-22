@@ -45,6 +45,7 @@
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
                 android:onClick="ans_a_onclick"
+                android:textAllCaps="false"
                 android:textSize="25sp" />
 
         </LinearLayout>
@@ -68,6 +69,7 @@
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
                 android:onClick="ans_b_onclick"
+                android:textAllCaps="false"
                 android:textSize="25sp" />
 
         </LinearLayout>
@@ -91,6 +93,7 @@
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
                 android:onClick="ans_c_onclick"
+                android:textAllCaps="false"
                 android:textSize="25sp" />
 
 

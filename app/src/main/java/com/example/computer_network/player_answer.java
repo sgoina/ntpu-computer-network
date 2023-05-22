@@ -34,6 +34,7 @@ public class player_answer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_answer);
+        getSupportActionBar().hide();
         Bundle bundle = getIntent().getExtras();
         gv = (globalvariable)getApplicationContext();
         tv_question = (TextView) findViewById(R.id.tv_set_question);
@@ -93,7 +94,7 @@ public class player_answer extends AppCompatActivity {
 
         public void run(){
             if (user_ans.equals(true_ans))
-                gv.firstplayerscore++;
+                gv.your_score++;
             Bundle bundle = new Bundle();
             Intent intent = new Intent();
             bundle.putString("content", "wait_ans");

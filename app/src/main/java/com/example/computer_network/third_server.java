@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.format.Formatter;
+import android.view.View;
 import android.widget.TextView;
 
 import java.io.*;
@@ -16,12 +17,17 @@ public class third_server extends AppCompatActivity {
     globalvariable gv;
     TextView waitperson;
 
-    private Runnable Connection = new Runnable(){
+    public class Connection implements Runnable{
 
         int count = 1;
         @Override
         public void run() {
-            waitperson.setText("wait for players(" + String.valueOf(count) + "/" + String.valueOf(gv.num_people) + ")...");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    waitperson.setText("wait for players(" + String.valueOf(count) + "/" + String.valueOf(gv.num_people) + ")...");
+                }
+            });
             try {
                 while (true) {
                     Socket socket = gv.serverSocket.accept();
@@ -31,8 +37,12 @@ public class third_server extends AppCompatActivity {
                     if (count == gv.num_people) {
                         break;
                     }
-                    waitperson.setText(msg);
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            waitperson.setText(msg);
+                        }
+                    });
                     gv.broadcast(msg, 0);
                 }
                 gv.broadcast("wait_question", 0);
@@ -45,20 +55,21 @@ public class third_server extends AppCompatActivity {
 
             }
         }
-    };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third_server);
-        waitperson = (TextView) findViewById(R.id.tv_waitperson);
+        getSupportActionBar().hide();
         gv = (globalvariable)getApplicationContext();
+        waitperson = (TextView) findViewById(R.id.tv_waitperson);
         try {
             showipaddress();
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
-        Thread thread=new Thread(Connection);
+        Thread thread=new Thread(new Connection());
         thread.start();
 
     }

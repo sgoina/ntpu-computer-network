@@ -32,6 +32,7 @@ public class set_question extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_question);
+        getSupportActionBar().hide();
         gv = (globalvariable)getApplicationContext();
         imageView = (ImageView) findViewById(R.id.imageView);
         resolver = this.getContentResolver();
@@ -42,6 +43,49 @@ public class set_question extends AppCompatActivity {
         et_ans_a = (EditText) findViewById(R.id.et_ans_a);
         et_ans_b = (EditText) findViewById(R.id.et_ans_b);
         et_ans_c = (EditText) findViewById(R.id.et_ans_c);
+    }
+
+    public void ans_a_onclick(View view) {
+        if(chka.isChecked()){
+            chkb.setEnabled(false);
+            chkb.setVisibility(View.INVISIBLE);
+            chkc.setEnabled(false);
+            chkc.setVisibility(View.INVISIBLE);
+        }
+        else{
+            chkb.setEnabled(true);
+            chkb.setVisibility(View.VISIBLE);
+            chkc.setEnabled(true);
+            chkc.setVisibility(View.VISIBLE);
+        }
+    }
+    public void ans_b_onclick(View view) {
+        if(chkb.isChecked()){
+            chka.setEnabled(false);
+            chka.setVisibility(View.INVISIBLE);
+            chkc.setEnabled(false);
+            chkc.setVisibility(View.INVISIBLE);
+        }
+        else{
+            chka.setEnabled(true);
+            chka.setVisibility(View.VISIBLE);
+            chkc.setEnabled(true);
+            chkc.setVisibility(View.VISIBLE);
+        }
+    }
+    public void ans_c_onclick(View view) {
+        if(chkc.isChecked()){
+            chkb.setEnabled(false);
+            chkb.setVisibility(View.INVISIBLE);
+            chka.setEnabled(false);
+            chka.setVisibility(View.INVISIBLE);
+        }
+        else{
+            chkb.setEnabled(true);
+            chkb.setVisibility(View.VISIBLE);
+            chka.setEnabled(true);
+            chka.setVisibility(View.VISIBLE);
+        }
     }
 
     public class server_send implements Runnable{
@@ -92,6 +136,16 @@ public class set_question extends AppCompatActivity {
             try {
                 gv.send_to_server("ready_question");
                 gv.send_to_server(et_question.getText().toString());
+                if (have_image) {
+                    gv.send_to_server("have_image");
+                    int size = gv.imagebuffer.length;
+                    gv.output.writeInt(size);
+                    gv.output.flush();
+                    gv.output.write(gv.imagebuffer, 0, gv.imagebuffer.length);
+                    gv.output.flush();
+                }
+                else
+                    gv.send_to_server("no_image");
                 gv.send_to_server(et_ans_a.getText().toString());
                 gv.send_to_server(et_ans_b.getText().toString());
                 gv.send_to_server(et_ans_c.getText().toString());
@@ -101,6 +155,7 @@ public class set_question extends AppCompatActivity {
                     gv.send_to_server("B");
                 else if (chkc.isChecked())
                     gv.send_to_server("C");
+
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent();
                 bundle.putString("content", "wait_ans");

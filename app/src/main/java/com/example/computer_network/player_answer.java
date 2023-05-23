@@ -104,6 +104,9 @@ public class player_answer extends AppCompatActivity {
         }
     };
     public void ans_a_onclick(View view) {
+        bt_a.setEnabled(false);
+        bt_b.setEnabled(false);
+        bt_c.setEnabled(false);
         if (gv.mode.equals("client")){
             Thread thread = new Thread(new send_client("A"));
             thread.start();
@@ -114,6 +117,9 @@ public class player_answer extends AppCompatActivity {
         }
     }
     public void ans_b_onclick(View view) {
+        bt_a.setEnabled(false);
+        bt_b.setEnabled(false);
+        bt_c.setEnabled(false);
         if (gv.mode.equals("client")){
             Thread thread = new Thread(new send_client("B"));
             thread.start();
@@ -124,6 +130,9 @@ public class player_answer extends AppCompatActivity {
         }
     }
     public void ans_c_onclick(View view) {
+        bt_a.setEnabled(false);
+        bt_b.setEnabled(false);
+        bt_c.setEnabled(false);
         if (gv.mode.equals("client")){
             Thread thread = new Thread(new send_client("C"));
             thread.start();

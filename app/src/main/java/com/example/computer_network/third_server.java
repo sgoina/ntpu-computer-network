@@ -34,6 +34,7 @@ public class third_server extends AppCompatActivity {
                     count++;
                     String msg = "wait for players(" + String.valueOf(count) + "/" + String.valueOf(gv.num_people) + ")...";
                     gv.buildplayer(socket, count);
+                    gv.broadcast(msg, 0);
                     if (count == gv.num_people) {
                         break;
                     }
@@ -43,7 +44,15 @@ public class third_server extends AppCompatActivity {
                             waitperson.setText(msg);
                         }
                     });
-                    gv.broadcast(msg, 0);
+                }
+                gv.broadcast("1-1", 0);
+                gv.broadcast("---> " + gv.your_name + " : " + gv.your_score , 0);
+                for (globalvariable.player p : gv.players){
+                    p.output.writeInt(gv.num_people - 1);
+                    p.output.flush();
+                }
+                for (globalvariable.player p : gv.players){
+                    gv.broadcast("      " + p.playername + " : " + p.score, 0);
                 }
                 gv.broadcast("wait_question", 0);
                 Intent intent = new Intent();

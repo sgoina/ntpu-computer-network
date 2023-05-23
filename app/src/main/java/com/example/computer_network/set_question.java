@@ -7,10 +7,7 @@ import android.graphics.*;
 import android.net.*;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.io.*;
 import java.io.IOException;
@@ -20,6 +17,7 @@ import java.nio.channels.FileChannel;
 public class set_question extends AppCompatActivity {
 
     CheckBox chka, chkb, chkc;
+    Button bt_send;
     EditText et_question, et_ans_a, et_ans_b, et_ans_c;
     globalvariable gv;
     private ContentResolver resolver;
@@ -36,6 +34,7 @@ public class set_question extends AppCompatActivity {
         gv = (globalvariable)getApplicationContext();
         imageView = (ImageView) findViewById(R.id.imageView);
         resolver = this.getContentResolver();
+        bt_send = (Button)findViewById(R.id.send_botton);
         chka = (CheckBox) findViewById(R.id.checkBox);
         chkb = (CheckBox) findViewById(R.id.checkBox2);
         chkc = (CheckBox) findViewById(R.id.checkBox3);
@@ -168,6 +167,7 @@ public class set_question extends AppCompatActivity {
         }
     };
     public void Send_question_onclick(View view) {
+        bt_send.setEnabled(false);
         if (gv.mode.equals("server")){
             Thread thread = new Thread(new server_send());
             thread.start();

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.*;
@@ -17,6 +18,42 @@ public class wait extends AppCompatActivity {
     private DataInputStream dataInputStream;
 
     TextView tv_status, tv_statistic;
+    Button bt_OK;
+
+    public void OK_onclick(View view) {
+        bt_OK.setVisibility(View.INVISIBLE);
+        bt_OK.setEnabled(false);
+        if (gv.mode.equals("server")){
+            Thread thread = new Thread(new server_ok());
+            thread.start();
+        }
+        else {
+            Thread thread = new Thread(new client_ok());
+            thread.start();
+        }
+    }
+
+    public class server_ok implements Runnable{
+        @Override
+        public void run() {
+            for (int i = 0; i < gv.threads.size(); i++) {
+                try {
+                    gv.threads.get(i).join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            next_turn();
+        }
+    }
+
+    public class client_ok implements Runnable{
+        @Override
+        public void run() {
+            gv.send_to_server("OKOK");
+            Thread.currentThread().interrupt();
+        }
+    }
 
     public class receive_client implements Runnable{
 
@@ -47,6 +84,29 @@ public class wait extends AppCompatActivity {
                         break;
                     }
                     else if (msg.equals("all_ok")){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tv_status.setText("所有玩家作答完畢");
+                            }
+                        });
+                        statistic = gv.input.readUTF();
+                        int playernumber = gv.input.readInt();
+                        for (int i = 0; i < playernumber; i++){
+                            String playerscore = gv.input.readUTF();
+                            statistic = statistic + "\n" + playerscore;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tv_statistic.setText(statistic);
+                                bt_OK.setVisibility(View.VISIBLE);
+                                bt_OK.setEnabled(true);
+                            }
+                        });
+                        continue;
+                    }
+                    else if (msg.equals("1-1")){
                         statistic = gv.input.readUTF();
                         int playernumber = gv.input.readInt();
                         for (int i = 0; i < playernumber; i++){
@@ -59,6 +119,7 @@ public class wait extends AppCompatActivity {
                                 tv_statistic.setText(statistic);
                             }
                         });
+                        continue;
                     }
                     runOnUiThread(new Runnable() {
                         @Override
@@ -237,8 +298,11 @@ public class wait extends AppCompatActivity {
         setContentView(R.layout.activity_wait);
         getSupportActionBar().hide();
         gv = (globalvariable)getApplicationContext();
+        bt_OK = (Button)findViewById(R.id.bt_ok);
         tv_status = (TextView) findViewById(R.id.tv_status);
         tv_statistic = (TextView) findViewById(R.id.tv_statistic);
+        bt_OK.setEnabled(false);
+        bt_OK.setVisibility(View.INVISIBLE);
         Bundle bundle = getIntent().getExtras();
         String content = bundle.getString("content");
         if (content.equals("wait_question")){
@@ -289,7 +353,7 @@ public class wait extends AppCompatActivity {
                 }
             }
             gv.broadcast("all_ok", 0);
-            if (gv.num_people == gv.now_turn) {
+            if (gv.num_people == gv.now_turn && gv.now_round < gv.num_round) {
                 scorebroad = "---> " + gv.your_name + " : " + gv.your_score + "\n";
                 gv.broadcast("---> " + gv.your_name + " : " + gv.your_score , 0);
             }
@@ -318,11 +382,16 @@ public class wait extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    tv_status.setText("所有玩家作答完畢");
                     tv_statistic.setText(scorebroad);
+                    bt_OK.setVisibility(View.VISIBLE);
+                    bt_OK.setEnabled(true);
                 }
             });
-
-            next_turn();
+            gv.threadinit();
+            for (int i = 0; i < gv.threads.size(); i++) {
+                gv.threads.get(i).start();
+            }
         }
     };
 }

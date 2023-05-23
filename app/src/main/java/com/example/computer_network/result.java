@@ -15,6 +15,13 @@ public class result extends AppCompatActivity {
     TextView tv_result;
     String scorebroad;
 
+    public void back_to_home_onclick(View view) {
+        gv.close();
+        Intent intent = new Intent();
+        intent.setClass(result.this, MainActivity.class);
+        startActivity(intent);
+    }
+
 
     public class send_result implements Runnable{
         @Override

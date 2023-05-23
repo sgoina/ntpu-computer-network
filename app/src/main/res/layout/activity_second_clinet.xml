@@ -35,7 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/dot" />
+            android:text="@string/dot"
+            android:textSize="30sp"/>
 
         <EditText
             android:id="@+id/et_address2"
@@ -51,7 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/dot" />
+            android:text="@string/dot"
+            android:textSize="30sp"/>
 
         <EditText
             android:id="@+id/et_address3"
@@ -67,7 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/dot" />
+            android:text="@string/dot"
+            android:textSize="30sp"/>
 
         <EditText
             android:id="@+id/et_address4"

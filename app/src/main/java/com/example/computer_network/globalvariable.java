@@ -80,10 +80,12 @@ public class globalvariable extends Application {
         public void run() {
             try {
                 playeranswer = nowplayer.input.readUTF();
-                if (playeranswer.equals("correct"))
-                    nowplayer.score++;
-                nowplayer.output.writeUTF("wait_ans");
-                nowplayer.output.flush();
+                if (!playeranswer.equals("OKOK")){
+                    if (playeranswer.equals("correct"))
+                        nowplayer.score++;
+                    nowplayer.output.writeUTF("wait_ans");
+                    nowplayer.output.flush();
+                }
             } catch (IOException e) {
                 System.out.println(nowplayer.playername + " close");
             }
@@ -102,6 +104,22 @@ public class globalvariable extends Application {
 
         for (server_waitanswer w : waits) {
             threads.add(new Thread(w));
+        }
+    }
+    public void close(){
+        try {
+            if (mode.equals("server"))
+                serverSocket.close();
+            else {
+                socket.close();
+                output.close();
+                input.close();
+            }
+            players.clear();
+            waits.clear();
+            threads.clear();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -83,8 +83,8 @@ public class globalvariable extends Application {
                 if (!playeranswer.equals("OKOK")){
                     if (playeranswer.equals("correct"))
                         nowplayer.score++;
-                    nowplayer.output.writeUTF("wait_ans");
-                    nowplayer.output.flush();
+//                    nowplayer.output.writeUTF("wait_ans");
+//                    nowplayer.output.flush();
                 }
             } catch (IOException e) {
                 System.out.println(nowplayer.playername + " close");

@@ -80,12 +80,8 @@ public class globalvariable extends Application {
         public void run() {
             try {
                 playeranswer = nowplayer.input.readUTF();
-                if (!playeranswer.equals("OKOK")){
-                    if (playeranswer.equals("correct"))
-                        nowplayer.score++;
-//                    nowplayer.output.writeUTF("wait_ans");
-//                    nowplayer.output.flush();
-                }
+                if (playeranswer.equals("correct"))
+                    nowplayer.score++;
             } catch (IOException e) {
                 System.out.println(nowplayer.playername + " close");
             }

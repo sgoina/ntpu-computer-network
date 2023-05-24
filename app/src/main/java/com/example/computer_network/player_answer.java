@@ -73,7 +73,6 @@ public class player_answer extends AppCompatActivity {
                 }
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent();
-//                String msg = gv.input.readUTF();
                 bundle.putString("content", "wait_ans");
                 intent.putExtras(bundle);
                 intent.setClass(player_answer.this, wait.class);
